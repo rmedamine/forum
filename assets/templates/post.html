@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/templates/styles/post.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Forum</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="http://localhost:8080/post" class="logo">Logo</a>
+            <nav class="nav-links">
+                <a href="http://localhost:8080/post">Home</a>
+                <a href="/assets/templates/about.html">About</a>
+                <a href="/assets/templates/contact.html">Contact</a>
+            </nav>
+         
+        </div>
+    </header>
+    <div class="content-spacer"></div>
+
+
+    <div class="forum-container">
+        <aside class="sidebar-left">
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="/post?filter=all">All</a></li>
+                <li><a href="/post?filter=technology">Technology</a></li>
+                <li><a href="/post?filter=lifestyle">Lifestyle</a></li>
+                <li><a href="/post?filter=health">Health</a></li>
+                <li><a href="/post?filter=sports">Sports</a></li>
+                <li><a href="/post?filter=travel">Travel</a></li>
+            </ul>
+        
+            <h2>Filter by</h2>
+            <ul>
+                <li><a href="/post?filter=created">My Created Posts</a></li>
+                <li><a href="/post?filter=liked">Liked Posts</a></li>
+            </ul>
+        
+            <div class="logout-container">
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">
+                        <i class="fas fa-sign-out-alt"></i> logout
+                    </button>
+                </form>
+            </div>
+            
+        </aside>
+        
+        <main class="posts-container">
+            <form action="/post/create" method="post">
+                <!-- Wrapper for the button -->
+                <div class="button-wrapper">
+                    <button type="submit">
+                        <i class="fas fa-plus-circle"></i> Create Post
+                    </button>
+                </div>
+            </form>
+
+            <h1>Posts</h1>
+            <ul>
+                {{ range . }}
+                <li class="post-item">
+                    <div class="username">{{ .User }}</div>
+                    <h3>{{ .Title }}</h3>
+                    <div class="category">Category: {{ .Category }}</div>
+                    <p class="content-preview">{{ .Content }}</p>
+
+                    {{ if gt (len .Content) 30 }}
+                    <button class="more-button" onclick="toggleContent(this)">Show More</button>
+                    <p class="content-full" style="display:none;">{{ .Content }}</p>
+
+                    {{ end }}
+                    <div class="post-date">{{ .Date }}</div>
+
+                    <div class="interaction-section">
+                        <div class="interaction-section">
+                            <form action="/like_post" method="post">
+                                <button class="like-comment-btn" name="like_post" value="{{ .ID }}">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    {{ .Like }}
+                                </button>
+                                <button class="dislike-comment-btn" name="deslike_post" value="{{ .ID }}">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    {{ .Deslike }}
+                                </button>
+                            </form>
+                            <form action="/comment" method="post">
+                                <button class="like-comment-btn" name="id-post" value="{{ .ID }}">Show all
+                                    Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                    <form class="comment-form" action="/newcomment" method="POST">
+                        <input type="text" name="comment" placeholder="Add a comment..." required>
+                        <button type="submit" value="{{ .ID }}" name="id-post">
+                            <i class="fas fa-comment"></i> <!-- Font Awesome Comment Icon -->
+                        </button>
+                    </form>
+
+                </li>
+                {{ end }}
+            </ul>
+            <form action="/post" method="post" class="pagination-buttons">
+                <button name="Back" value="Back">Back</button>
+                <button name="Next" value="Next">Next</button>
+            </form>
+        </main>
+    </div>
+
+</body>
+<script>
+    function deleteCookie() {
+        document.cookie = `session=; expires=Thu, 01 Jan 2000 00:00:00 UTC;`;
+        window.location.href = "/";
+    }
+    const button = document.querySelector("a")
+</script>
+
+</html>
